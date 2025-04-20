@@ -117,7 +117,10 @@ end
 ## logging
 
 max_log_messages = Threads.Atomic{Int}(1_000)
-log_message_overflow = Threads.Atomic{Bool}(false)
+log_messages_overflow = Threads.Atomic{Bool}(false)
+
+export max_log_messages
+export log_messages_overflow
 
 const log_messages = []
 const log_lock = ReentrantLock()
@@ -140,9 +143,9 @@ function log_message(sev, udata, dbg_ptr, ptr)
     Base.@lock log_lock begin
         if length(log_messages) < max_log_messages
             push!(log_messages, (; sev, dbg, str))
-            log_message_overflow = false
+            # log_messages_overflow = false
         else
-            log_message_overflow = true
+            log_messages_overflow = true
         end
     end
     ccall(:uv_async_send, Cint, (Ptr{Cvoid},), udata)
