@@ -141,7 +141,7 @@ function log_message(sev, udata, dbg_ptr, ptr)
 
     # print asynchronously
     Base.@lock log_lock begin
-        if length(log_messages) < max_log_messages[]
+        if !_initialized[] || length(log_messages) < max_log_messages[]
             push!(log_messages, (; sev, dbg, str))
             # log_messages_overflow[] = false
         else
