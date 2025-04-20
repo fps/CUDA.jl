@@ -116,11 +116,11 @@ end
 
 ## logging
 
-max_log_messages = Threads.Atomic{Int}(1_000)
-log_messages_overflow = Threads.Atomic{Bool}(false)
-
 export max_log_messages
 export log_messages_overflow
+
+max_log_messages = Threads.Atomic{Int}(1_000)
+log_messages_overflow = Threads.Atomic{Bool}(false)
 
 const log_messages = []
 const log_lock = ReentrantLock()
