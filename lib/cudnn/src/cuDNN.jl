@@ -141,11 +141,11 @@ function log_message(sev, udata, dbg_ptr, ptr)
 
     # print asynchronously
     Base.@lock log_lock begin
-        if length(log_messages) < max_log_messages
+        if length(log_messages) < max_log_messages[]
             push!(log_messages, (; sev, dbg, str))
-            # log_messages_overflow = false
+            # log_messages_overflow[] = false
         else
-            log_messages_overflow = true
+            log_messages_overflow[] = true
         end
     end
     ccall(:uv_async_send, Cint, (Ptr{Cvoid},), udata)
