@@ -119,7 +119,7 @@ end
 export max_log_messages
 export log_messages_overflow
 
-max_log_messages = Threads.Atomic{Int}(1_000)
+max_log_messages = Threads.Atomic{Int}(100_000)
 log_messages_overflow = Threads.Atomic{Bool}(false)
 
 const log_messages = []
@@ -143,7 +143,6 @@ function log_message(sev, udata, dbg_ptr, ptr)
     Base.@lock log_lock begin
         if !_initialized[] || length(log_messages) < max_log_messages[]
             push!(log_messages, (; sev, dbg, str))
-            # log_messages_overflow[] = false
         else
             log_messages_overflow[] = true
         end
@@ -195,7 +194,7 @@ function __init__()
     if !precompiling && (isdebug(:init, cuDNN) || Base.JLOptions().debug_level >= 2)
         log_cond[] = Base.AsyncCondition() do async_cond
             if log_messages_overflow[]
-                @warn "log_messages overflowed. Missed messages. Make sure to call yield() nore often"
+                @warn "log_messages overflowed. Missed messages. Make sure to call yield() more often"
                 log_messages_overflow[] = false
             end
             Base.@lock log_lock begin
