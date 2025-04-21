@@ -194,6 +194,10 @@ function __init__()
     # register a log callback
     if !precompiling && (isdebug(:init, cuDNN) || Base.JLOptions().debug_level >= 2)
         log_cond[] = Base.AsyncCondition() do async_cond
+            if log_messages_overflow[]
+                @warn "log_messages overflowed. Missed messages. Make sure to call yield() nore often"
+                log_messages_overflow[] = false
+            end
             Base.@lock log_lock begin
                 while length(log_messages) > 0
                     message = popfirst!(log_messages)
