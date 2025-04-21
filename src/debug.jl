@@ -1,4 +1,8 @@
 # debug functionality
 
-isdebug(group, mod=CUDA) =
-    Base.CoreLogging.current_logger_for_env(Base.CoreLogging.Debug, group, mod) !== nothing
+function isdebug(group, mod=CUDA)
+    logger = Base.CoreLogging.current_logger_for_env(Base.CoreLogging.Debug, group, mod)
+    shouldLog = logger !== nothing && Base.CoreLogging.shouldLog(logger, Base.CoreLogging.Debug, mod, group, 0)
+    println(shouldLog)
+    shouldLog
+end
