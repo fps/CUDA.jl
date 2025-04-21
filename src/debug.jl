@@ -1,8 +1,8 @@
 # debug functionality
 
 function isdebug(group, mod=CUDA)
-    logger = Base.CoreLogging.current_logger_for_env(Base.CoreLogging.Debug, group, mod)
-    shouldLog = logger !== nothing && Base.CoreLogging.shouldlog(logger, Base.CoreLogging.Debug, mod, group, 0)
-    println(shouldLog)
-    shouldLog
+    level = Base.CoreLogging.Debug
+    logger = Base.CoreLogging.current_logger_for_env(level, group, mod)
+    # TODO: Which id to choose here instead of 0?
+    logger !== nothing && Base.CoreLogging.shouldlog(logger, level, mod, group, 0)
 end
